@@ -1,0 +1,1 @@
+from .persons_viewset import RegisterViewset, PersonViewset

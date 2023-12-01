@@ -1,24 +1,38 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DashboardView from '@/views/DashboardView.vue'
-import ProjectsView from '@/views/ProjectsView.vue'
-import TeamView from '@/views/TeamView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'dashboard',
-    component: DashboardView
+    name: 'Index',
+    component: () => import('@/views/AuthView.vue'),
+    children: [
+      {
+        path: 'dashboard/',
+        name: 'Dashboard',
+        component: () => import('@/views/DashboardView.vue'),
+      },
+      {
+        path: 'projects/',
+        name: 'Projects',
+        component: () => import('@/views/ProjectsView.vue'),
+      },
+      {
+        path: 'team/',
+        name: 'Team',
+        component: () => import('@/views/TeamView.vue'),
+      }
+    ]
   },
   {
-    path: '/projects',
-    name: 'projects',
-    component: ProjectsView,
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/views/LoginView.vue')
   },
   {
-    path: '/team',
-    name: 'team',
-    component: TeamView,
-  }
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/views/RegisterView.vue')
+  },
 ]
 
 const router = createRouter({

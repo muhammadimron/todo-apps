@@ -61,17 +61,17 @@
                     {
                         icon: 'mdi-view-dashboard',
                         text: 'Dashboard',
-                        route: '/'
+                        route: '/dashboard/'
                     },
                     {
                         icon: 'mdi-folder',
                         text: 'My Projects',
-                        route: '/projects'
+                        route: '/projects/'
                     },
                     {
                         icon: 'mdi-account-group',
                         text: 'Team',
-                        route: '/team'
+                        route: '/team/'
                     },
                 ]
             }
