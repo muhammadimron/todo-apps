@@ -1,6 +1,7 @@
 from django.contrib.auth.hashers import make_password
-from rest_framework import viewsets, status, authentication, permissions, exceptions
+from rest_framework import viewsets, status, permissions, exceptions
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from api.models import Person
 from api.serializers import PersonSerializer
@@ -22,7 +23,7 @@ class RegisterViewset(viewsets.GenericViewSet):
 class PersonViewset(viewsets.ReadOnlyModelViewSet):
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
-    authentication_classes = (authentication.TokenAuthentication, )
+    authentication_classes = (JWTAuthentication, )
     permission_classes = (permissions.IsAuthenticated, )
 
     def list(self, request, *args, **kwargs):

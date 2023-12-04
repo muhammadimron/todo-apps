@@ -13,8 +13,6 @@
                     <v-card-actions class="d-flex align-center justify-center">
                         <v-btn type="submit" class="bg-indigo" width="500">Submit</v-btn>
                     </v-card-actions>
-                    <v-btn class="bg-indigo" width="500" @click="refreshButton">Refresh</v-btn>
-                    <v-btn class="bg-indigo" width="500" @click="personButton">Verify</v-btn>
                 </v-form>
             </v-card>
         </v-container>
@@ -39,19 +37,12 @@
                 .then(response => {
                     localStorage.setItem("refresh", response.data.refresh)
                     localStorage.setItem("token", response.data.access)
+                    this.$router.push('/dashboard/')
                 })
                 .catch(error => {
                     console.error(error)
                 })
                 
-            },
-            async personButton(){
-                console.log(localStorage.getItem("token"))
-                await axios.get(`http://localhost:8000/api/person/`, {
-                    "Authorization": `Token ${localStorage.getItem("token")}`
-                })
-                .then(response => console.log(response))
-                .catch(error => console.error(error))
             }
         }
     }

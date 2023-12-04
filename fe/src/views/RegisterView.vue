@@ -45,7 +45,7 @@
                     email: '',
                     password: '' 
                 },
-                successDialog: true,
+                successDialog: false,
             }
         },
         methods: {
@@ -59,7 +59,7 @@
                 },
                 closeDialog(){
                     this.successDialog = false
-                    this.$router.push('login')
+                    this.$router.push('/login')
                 }
         }
     }

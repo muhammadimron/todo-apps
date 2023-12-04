@@ -19,7 +19,7 @@
                     </v-list-item>
                 </v-list>
             </v-menu>
-            <v-btn flat color="bg-grey">
+            <v-btn flat color="bg-grey" @click="logout">
                 <span class="text-grey">Sign Out</span>
                 <v-icon end class="text-grey" icon="mdi-exit-to-app"></v-icon>
             </v-btn>
@@ -74,6 +74,13 @@
                         route: '/team/'
                     },
                 ]
+            }
+        },
+        methods: {
+            logout(){
+                localStorage.removeItem("refresh")
+                localStorage.removeItem("token")
+                this.$router.push("/login")
             }
         }
     }
