@@ -24,7 +24,7 @@
           </v-tooltip>
         </v-col>
       </v-row>
-      <v-card flat v-for="project in projects" :key="project.title" >
+      <v-card flat v-for="project in projects" :key="project.id" >
         <v-row no-gutters :class="`pa-5 project ${project.status}`">
           <v-col cols="12" md="6">
             <div class="text-caption text-grey">Project title</div>
@@ -32,11 +32,11 @@
           </v-col>
           <v-col cols="6" md="2" sm="4">
             <div class="text-caption text-grey">Person</div>
-            <div>{{ project.person }}</div>
+            <div>{{ `${project.person_detail.first_name} ${project.person_detail.last_name}` }}</div>
           </v-col>
           <v-col cols="6" md="2" sm="4">
             <div class="text-caption text-grey">Due by</div>
-            <div>{{ project.due }}</div>
+            <div>{{ getFormatedDate(project.due) }}</div>
           </v-col>
           <v-col cols="6" md="2" sm="4">
             <div class="text-right">
@@ -51,52 +51,39 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'DashboardView',
   data(){
     return {
-      projects: [
-        {
-          title: "Design a New Website",
-          person: "The Master",
-          due: "1st January 2024",
-          status: "complete",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-        {
-          title: "Building Secure Microserver",
-          person: "Chihaou Nouma",
-          due: "31th December 2023",
-          status: "ongoing",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-        {
-          title: "Design a New Website - Version 2",
-          person: "The Master",
-          due: "1st February 2024",
-          status: "ongoing",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-        {
-          title: "How to Make a Great API with Django",
-          person: "Sungi Sinh",
-          due: "12 November 2023",
-          status: "complete",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-        {
-          title: "Tips How to Become a Great Programmer",
-          person: "Watasugi Onodesu",
-          due: "11st December 2023",
-          status: "overdue",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-      ]
+      projects: [],
     }
   },
   methods: {
     sortBy(prop){
       this.projects.sort((a, b) => a[prop] < b[prop] ? -1 : 1)
+    },
+    getFormatedDate(date){
+      const dateObj = new Date(date)
+      const options = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }
+      const formattedDate = dateObj.toLocaleDateString('en-US', options)
+      return formattedDate
+    }
+  },
+  async mounted(){
+    const token = localStorage.getItem("token")
+    const response = await axios.get('http://127.0.0.1:8000/api/project/', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    
+    if (response.status == 200) {
+      this.projects = response.data
     }
   }
 };

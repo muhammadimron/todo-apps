@@ -46,9 +46,13 @@ class Person(auth_models.AbstractUser):
     role = models.CharField(verbose_name="Role", max_length=255)
     email = models.EmailField(verbose_name="Email", max_length=255, unique=True)
     password = models.CharField(max_length=255)
+    avatar = models.ImageField(upload_to="images/", null=True, blank=True)
     username = None
 
     objects = PersonManager()
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name", "role"]
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'

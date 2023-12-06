@@ -8,6 +8,7 @@ class PersonSerializer(serializers.ModelSerializer):
     role = serializers.CharField()
     email = serializers.CharField()
     password = serializers.CharField(write_only=True)
+    avatar = serializers.ImageField(max_length=None, use_url=True)
 
     class Meta:
         model = Person
@@ -17,5 +18,6 @@ class PersonSerializer(serializers.ModelSerializer):
             'last_name',
             'role',
             'email',
-            'password'
+            'password',
+            'avatar'
         ]

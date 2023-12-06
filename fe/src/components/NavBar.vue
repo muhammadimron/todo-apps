@@ -27,10 +27,10 @@
         <v-navigation-drawer v-model="drawer" temporary color="indigo" disable-route-watcher location="left">
             <v-card flat color="indigo" class="my-5">
                 <v-responsive class="pt-4">
-                    <v-img src="/avatar-1.png" width="100" class="mx-auto"></v-img>
+                    <v-img :src="avatar" width="100" class="mx-auto"></v-img>
                 </v-responsive>
-                <v-card-title class="text-center">The Master</v-card-title>
-                <v-card-subtitle class="text-center">Project Manager</v-card-subtitle>
+                <v-card-title class="text-center">{{ name }}</v-card-title>
+                <v-card-subtitle class="text-center">{{ role }}</v-card-subtitle>
             </v-card>
             <v-container class="my-2 text-center">
                 <PopUp />
@@ -48,6 +48,7 @@
 </template>
 
 <script>
+    import axios from 'axios';
     import PopUp from './PopUp.vue';
     export default {
         components: {
@@ -56,6 +57,9 @@
         name: "NavBar",
         data(){
             return {
+                name: '',
+                role: '',
+                avatar: '',
                 drawer: false,
                 links: [
                     {
@@ -81,6 +85,20 @@
                 localStorage.removeItem("refresh")
                 localStorage.removeItem("token")
                 this.$router.push("/login")
+            }
+        },
+        async mounted(){
+            const token = localStorage.getItem("token")
+            const response = await axios.get('http://127.0.0.1:8000/api/person/', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            if (response.status == 200){
+                this.name = `${response.data.first_name} ${response.data.last_name}`
+                this.role = response.data.role
+                this.avatar = response.data.avatar
             }
         }
     }

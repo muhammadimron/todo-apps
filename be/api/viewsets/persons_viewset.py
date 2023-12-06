@@ -33,3 +33,12 @@ class PersonViewset(viewsets.ReadOnlyModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         raise exceptions.MethodNotAllowed("GET")
+
+class PersonAllViewset(viewsets.ReadOnlyModelViewSet):
+    queryset = Person.objects.exclude(id=1)
+    serializer_class = PersonSerializer
+    authentication_classes = (JWTAuthentication, )
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def retrieve(self, request, *args, **kwargs):
+        raise exceptions.MethodNotAllowed("GET")

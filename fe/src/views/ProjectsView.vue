@@ -4,7 +4,7 @@
 
     <v-container class="my-15">
       <v-expansion-panels>
-        <v-expansion-panel v-for="project in myProjects" :key="project.title">
+        <v-expansion-panel v-for="project in myProjects" :key="project.id">
           <v-expansion-panel-title>
             {{ project.title }}
           </v-expansion-panel-title>
@@ -12,7 +12,7 @@
             <v-card flat class="px-4">
               <v-card-item class="text-grey">
                 <v-card-subtitle class="font-weight-bold">
-                  due to {{ project.due }}
+                  due to {{ getFormatedDate(project.due) }}
                 </v-card-subtitle>
                 <v-card-text>
                   {{ project.content }}
@@ -27,54 +27,55 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'ProjectsView',
   data(){
     return {
-      projects: [
-        {
-          title: "Design a New Website",
-          person: "The Master",
-          due: "1st January 2024",
-          status: "complete",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-        {
-          title: "Building Secure Microserver",
-          person: "Chihaou Nouma",
-          due: "31th December 2023",
-          status: "ongoing",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-        {
-          title: "Design a New Website - Version 2",
-          person: "The Master",
-          due: "1st February 2024",
-          status: "ongoing",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-        {
-          title: "How to Make a Great API with Django",
-          person: "Sungi Sinh",
-          due: "12 November 2023",
-          status: "complete",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-        {
-          title: "Tips How to Become a Great Programmer",
-          person: "Watasugi Onodesu",
-          due: "11st December 2023",
-          status: "overdue",
-          content: "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum libero dicta, tenetur quos quas qui fugiat obcaecati corporis quo? Quibusdam optio fuga veritatis quisquam et? Delectus molestiae assumenda suscipit totam."
-        },
-      ]
+      projects: [],
+      person: ''
     }
   },
   computed: {
     myProjects(){
       return this.projects.filter(project => {
-        return project.person === "The Master"
+        const fullName = `${project.person_detail.first_name} ${project.person_detail.last_name}`
+        return fullName === this.person
       })
+    }
+  },
+  methods: {
+    getFormatedDate(date){
+      const dateObj = new Date(date)
+      const options = {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }
+      const formattedDate = dateObj.toLocaleDateString('en-US', options)
+      return formattedDate
+    }
+  },
+  async mounted(){
+    const token = localStorage.getItem("token")
+    const response = await axios.get('http://127.0.0.1:8000/api/project/', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    
+    if (response.status == 200) {
+      this.projects = response.data
+    }
+
+    const responsePerson = await axios.get('http://127.0.0.1:8000/api/person/', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+
+    if (responsePerson.status == 200) {
+      this.person = `${responsePerson.data.first_name} ${responsePerson.data.last_name}`
     }
   }
 };

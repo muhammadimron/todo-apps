@@ -1,5 +1,5 @@
 from django.contrib import admin
-from api.models import Person
+from api.models import Person, Project
 
 # Register your models here.
 class PersonAdmin(admin.ModelAdmin):
@@ -11,3 +11,4 @@ class PersonAdmin(admin.ModelAdmin):
     )
 
 admin.site.register(Person, PersonAdmin)
+admin.site.register(Project)

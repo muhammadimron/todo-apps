@@ -4,7 +4,7 @@
 
 		<v-container class="my-15">
 			<v-row>
-				<v-col cols="12" sm="6" md="3" v-for="person in team" :key="person.name">
+				<v-col cols="12" sm="6" md="3" v-for="person in team" :key="person.id">
 					<v-card flat class="text-center ma-3">
 						<v-responsive class="pt-4">
 							<v-avatar size="100" color="grey">
@@ -12,7 +12,7 @@
 							</v-avatar>
 						</v-responsive>
 						<v-card-text>
-							<v-card-title class="text-h6">{{ person.name }}</v-card-title>
+							<v-card-title class="text-h6">{{ `${person.first_name} ${person.last_name}` }}</v-card-title>
 							<div class="text-grey">{{ person.role }}</div>
 						</v-card-text>
 						<v-card-actions>
@@ -29,37 +29,24 @@
 </template>
   
   <script>
+  import axios from 'axios';
   export default {
     name: 'TeamView',
 	data(){
 		return {
-			team: [
-				{
-					name: "The Master",
-					role: "Project Manager",
-					avatar: "/avatar-1.png"
-				},
-				{
-					name: "Chihaou Nouma",
-					role: "Data Analyst",
-					avatar: "/avatar-2.png"
-				},
-				{
-					name: "Sungi Sinh",
-					role: "Front-End Developer",
-					avatar: "/avatar-3.png"
-				},
-				{
-					name: "Watasugi Onodesu",
-					role: "Back-End Developer",
-					avatar: "/avatar-4.png"
-				},
-				{
-					name: "Sikufari Takuriyu",
-					role: "Data Engineer",
-					avatar: "/avatar-5.png"
-				},
-			],
+			team: []
+		}
+	},
+	async mounted(){
+		const token = localStorage.getItem("token")
+		const response = await axios.get('http://127.0.0.1:8000/api/personAll', {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		})
+
+		if (response.status == 200) {
+			this.team = response.data
 		}
 	}
   };
