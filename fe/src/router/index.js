@@ -76,14 +76,38 @@ router.beforeEach(async (to, from, next) => {
 
         next()
       } catch (refreshError) {
-        console.error(refreshError)
+        console.log(refreshError)
         next({ name: "Login" })
       }
     }
   }
 
   if (to.matched.some(record => record.meta.authPage)) {
-    next(!to.matched.some(record => record.meta.requiresAuth) ? null : from)
+    const token = localStorage.getItem("token")
+
+    try {
+      if (token) {
+        await axios.post('http://127.0.0.1:8000/verify/', { token: token })
+        
+        next({ path: '/dashboard/' })
+      } else {
+        throw new Error("Authenticated, cannot go into auth pages.")
+      }
+    } catch (error) {
+      const refresh = localStorage.getItem("refresh")
+
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/refresh/', { refresh: refresh })
+        localStorage.setItem("token", response.data.access)
+
+        await axios.post('http://127.0.0.1:8000/verify/', { token: response.data.access })
+
+        next({ path: '/dashboard/' })
+      } catch (refreshError) {
+        console.log(refreshError)
+        next()
+      }
+    }
   }
 })
 

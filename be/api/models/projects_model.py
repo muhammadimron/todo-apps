@@ -6,4 +6,4 @@ class Project(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
     due = models.DateTimeField()
     status = models.CharField(max_length=255)
-    content = models.CharField(max_length=5000)
+    content = models.TextField(max_length=10000)

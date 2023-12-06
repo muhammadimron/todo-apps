@@ -17,6 +17,11 @@
                 <v-card-text>
                   {{ project.content }}
                 </v-card-text>
+                <v-card-actions>
+                  <v-btn v-if="project.status == 'ongoing'" class="bg-indigo" size="small" @click="updateCompleteStatus(project)">Make complete</v-btn>
+                  <v-btn v-if="project.status == 'complete'" class="bg-grey" size="small" disabled>Completed</v-btn>
+                  <v-btn v-if="project.status == 'overdue'" class="bg-danger" size="small" disabled>Overdue</v-btn>
+                </v-card-actions>
               </v-card-item>
             </v-card>
           </v-expansion-panel-text>
@@ -33,7 +38,7 @@ export default {
   data(){
     return {
       projects: [],
-      person: ''
+      person: '',
     }
   },
   computed: {
@@ -54,6 +59,20 @@ export default {
       }
       const formattedDate = dateObj.toLocaleDateString('en-US', options)
       return formattedDate
+    },
+    async updateCompleteStatus(project){
+      const token = localStorage.getItem("token")
+
+      project.status = "complete"
+      try {
+        await axios.put(`http://127.0.0.1:8000/api/project/${project.id}/`, project, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+      } catch (error) {
+        console.error(error)
+      }
     }
   },
   async mounted(){

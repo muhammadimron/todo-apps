@@ -8,7 +8,8 @@
             <v-form @submit.prevent="addSubmit" ref="form">
                 <v-card-text>
                     <v-text-field v-model="title" label="Title" prepend-inner-icon="mdi-folder" color="indigo" class="text-indigo" :rules="rules"></v-text-field>
-                    <v-textarea v-model="content" label="Information" prepend-inner-icon="mdi-pencil" color="indigo" class="text-indigo" :rules="rules"></v-textarea>
+                    <v-textarea v-model="content" label="Content" prepend-inner-icon="mdi-pencil" color="indigo" class="text-indigo" :rules="rules"></v-textarea>
+                    <v-select v-model="status" label="Status" :items="['ongoing', 'complete', 'overdue']" prepend-inner-icon="mdi-clock-check" color="indigo" class="text-indigo"></v-select>
                     <v-menu v-model="menu" :close-on-content-click="false" width="200">
                         <template v-slot:activator="{ props }">
                             <v-text-field v-model="formattedDate" label="Due Date" v-bind="props" prepend-inner-icon="mdi-folder" color="indigo" class="text-indigo" :rules="rules"></v-text-field>
@@ -34,6 +35,7 @@
 
 <script>
     import format from 'date-fns/format'
+    import axios from 'axios'
     export default {
         name: "PopUp",
         data(){
@@ -42,6 +44,7 @@
                 menu: false,
                 title: '',
                 content: '',
+                status: '',
                 due: null,
                 minDate: new Date(),
                 rules: [
@@ -53,7 +56,34 @@
             async addSubmit(){
                 const { valid } = await this.$refs.form.validate()
                 if(valid){
-                    console.log(`Title : ${this.title}\nInformation : ${this.content}\nDue : ${this.due}`)
+                    const token = localStorage.getItem("token")
+                    const response = await axios.get('http://127.0.0.1:8000/api/person/', {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    })
+
+                    if (response.status == 200) {
+                        const person = response.data.id
+                        
+                        try {
+                            await axios.post('http://127.0.0.1:8000/api/project/', {
+                                title: this.title,
+                                content: this.content,
+                                status: this.status,
+                                due: this.due,
+                                person: person
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`
+                                }
+                            })
+                        } catch (error) {
+                            console.error(error)
+                        }
+                    }
+
                     this.dialog = false
                 }
             },
