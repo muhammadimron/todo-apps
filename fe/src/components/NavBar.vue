@@ -27,7 +27,7 @@
         <v-navigation-drawer v-model="drawer" temporary color="indigo" disable-route-watcher location="left">
             <v-card flat color="indigo" class="my-5">
                 <v-responsive class="pt-4">
-                    <v-img :src="avatar" width="100" class="mx-auto"></v-img>
+                    <v-img :src="avatar" width="100" class="mx-auto rounded-circle"></v-img>
                 </v-responsive>
                 <v-card-title class="text-center">{{ name }}</v-card-title>
                 <v-card-subtitle class="text-center">{{ role }}</v-card-subtitle>
