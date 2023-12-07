@@ -15,6 +15,7 @@
                         <v-text-field v-model="formData.email" label="Email" color="indigo" class="text-indigo" :rules="[rules.required, rules.minLength, rules.emailFormat]"></v-text-field>
                         <v-text-field v-model="formData.password" label="Password" color="indigo" class="text-indigo" :rules="[rules.required, rules.minLength, rules.complexPassword]"></v-text-field>
                         <v-text-field v-model="formData.confirmPassword" label="Confirm Password" color="indigo" class="text-indigo" :rules="[rules.required, rules.minLength, rules.matchPassword]"></v-text-field>
+                        <v-file-input v-model="formData.avatar" label="Avatar" color="indigo" class="text-indigo" :rules="[rules.required]"></v-file-input>
                     </v-card-text>
                     <v-card-actions class="d-flex align-center justify-center">
                         <v-btn type="submit" class="bg-indigo" width="500">Register</v-btn>
@@ -39,7 +40,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+    import axios from 'axios'
     export default {
         name: "LoginView",
         data(){
@@ -50,7 +51,8 @@ import axios from 'axios'
                     role: '',
                     email: '',
                     password: '',
-                    confirmPassword: '' 
+                    confirmPassword: '',
+                    avatar: null 
                 },
                 rules: {
                     required: (value) => !!value || 'This field is required.',
@@ -66,12 +68,16 @@ import axios from 'axios'
             async handleRegister(){
                 const { valid } = await this.$refs.registerForm.validate()
                 if (valid) {
-                    await axios.post('http://127.0.0.1:8000/api/register/', this.formData)
-                            .then(response => {
-                                console.log(response.status)
-                                this.successDialog = true
-                            })
-                            .catch(error => console.error(error))
+                    await axios.post('http://127.0.0.1:8000/api/register/', this.formData, {
+                        headers: {
+                            "Content-Type": 'multipart/form-data',
+                        }
+                    })
+                    .then(response => {
+                        console.log(response.status)
+                        this.successDialog = true
+                    })
+                    .catch(error => console.error(error))
                 }
             },
             closeDialog(){

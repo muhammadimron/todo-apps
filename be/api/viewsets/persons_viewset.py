@@ -12,6 +12,7 @@ class RegisterViewset(viewsets.GenericViewSet):
 
     def create(self, request, *args, **kwargs):
         mutable_data = request.data.copy()
+        mutable_data["avatar"] = request.data.get('avatar[]')
         mutable_data["password"] = make_password(mutable_data["password"])
 
         serializer = self.get_serializer(data=mutable_data)
