@@ -55,6 +55,7 @@
         methods: {
             async addSubmit(){
                 const { valid } = await this.$refs.form.validate()
+                console.log(await this.$refs.form.validate())
                 if(valid){
                     const token = localStorage.getItem("token")
                     const response = await axios.get('http://127.0.0.1:8000/api/person/', {
